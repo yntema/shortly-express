@@ -48,8 +48,8 @@ function(req, res) {
     console.log('Not a valid url: ', uri);
     return res.send(404);
   }
+  new Link({ url: uri /* , userId: current userId */ }).fetch().then(function(found) {
 
-  new Link({ url: uri }).fetch().then(function(found) {
     if (found) {
       res.send(200, found.attributes);
     } else {
@@ -75,7 +75,34 @@ function(req, res) {
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
+app.get('/signup', 
+function(req, res) {
+  res.render('signup');
+});
 
+app.get('/login', 
+function(req, res) {
+  res.render('login');
+});
+
+app.post('/signup', 
+function(req, res) {
+
+  var userObject = { 
+    username: req.body.username, 
+    password: req.body.password
+  };  
+      console.log('userobject: ', userObject);
+
+  new User(userObject)
+    .save()
+    .then(function(user) {
+      console.log('user: ', user);
+    })
+    .then(function (hash) {
+      console.log(hash);
+    });
+});
 
 
 /************************************************************/
