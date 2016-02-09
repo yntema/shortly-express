@@ -19,6 +19,6 @@ new User({username: 'dayman', password: 'nightman'})
   new User({username: 'dayman'})
   .fetch()
   .then(function(found) {
-    console.log(found); // password = 'nightman'
+    console.log(found);
   });
 });
