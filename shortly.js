@@ -3,7 +3,8 @@ var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
 var sessions = require('express-session');
-
+var bcrypt = require('bcrypt-nodejs');
+var Promise = require('bluebird');
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -122,30 +123,24 @@ app.post('/login', function(req, res) {
     password: req.body.password
   };
 
-  console.log('username object', userObject);
-  // pull in usrnam, passwrd
-  // reference the db
+  // var compareAsync = Promise.promisify(bcrypt.compare);
+
   new User({username: userObject.username})
   .fetch()
   .then(function(user) {
-    return { savedPassword: user.attributes.password };
+    return user.attributes.password;
   })
-  .then(function(passObject) {
-    // error because makehashPromise returns a promise
-    passObject.enteredPassword = util.makeHashPromise(userObject.password); 
-    return passObject;
-  })
-  .then(function(passObject) {
-    console.log('entered password: ', passObject.enteredPassword);
-    console.log('saved password: ', passObject.savedPassword);
-    return passObject.enteredPassword === passObject.savedPassword;
+  .then(function(hashedPassword) {
+    return util.compareAsync(userObject.password, hashedPassword); 
   })
   .then(function(passwordMatches) {
     console.log('passwordMatches: ', passwordMatches);
     req.session.username = userObject.username;
+    res.render('index');
   })
   .catch(function(err) {
     console.log('Invalid username/password: ', err);
+    res.render('login');
   });
   // if username exists
     // check password?
@@ -154,7 +149,6 @@ app.post('/login', function(req, res) {
         // redirect to index
   // else
     // redirect to login?
-  res.render('index');
   // somewhere in the callback  req.session.user = req.username;
 });
 
