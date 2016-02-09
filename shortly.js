@@ -1,3 +1,12 @@
+// TODO:
+// ability to log out
+// login, logout, signup buttons
+// enable sessions so user doesn't need to keep logging in
+// pass tests
+// only show links that belong to the specified user
+
+
+
 var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
