@@ -113,7 +113,8 @@ app.post('/signup', function(req, res) {
 });
 
 app.get('/login', function(req, res) {
-  res.render('login');
+  util.checkSession(req, res, 'login');
+  // res.render('login');
 });
 
 app.post('/login', function(req, res) {
