@@ -2,6 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
+var sessions = require('express-session');
 
 
 var db = require('./app/config');
@@ -22,21 +23,29 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
+// possible cookie/sessions stuff
+// app.use(express.cookieParser());
+app.use(sessions({secret: '123456789QWERTY'}));
+
 
 app.get('/', 
 function(req, res) {
-  res.render('index');
+  util.checkSession(req, res, 'index');
 });
+
 
 app.get('/create', 
 function(req, res) {
-  res.render('index');
+  util.checkSession(req, res, 'index');
 });
 
 app.get('/links', 
 function(req, res) {
-  Links.reset().fetch().then(function(links) {
-    res.send(200, links.models);
+  util.checkSession(req, res,
+  function(req, res) {
+    Links.reset().fetch().then(function(links) {
+      res.send(200, links.models);
+    });
   });
 });
 
@@ -82,6 +91,8 @@ function(req, res) {
 
 app.get('/login', 
 function(req, res) {
+  // req.session.user = username;
+  console.log('req.session (links):   .........', req.session);
   res.render('login');
 });
 
