@@ -92,15 +92,11 @@ function(req, res) {
     username: req.body.username, 
     password: req.body.password
   };  
-  // console.log('userobject: ', userObject);
 
   new User(userObject)
-    .save(function(something) {
-      console.log(something);
-    })
+    .save()
     .then(function(user) {
-      console.log('user: ', user);
-      res.send(200);
+      res.render('index');
     });
     // .then(function (hash) {
     //   console.log(hash);
